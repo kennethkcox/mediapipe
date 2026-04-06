@@ -33,7 +33,9 @@ class _PytorchReader:
   def __init__(self, model_path: str):
     if not os.path.exists(model_path):
       raise ValueError(f"{model_path} does not exists.")
-    self._model = torch.load(model_path, map_location=torch.device("cpu"))
+    self._model = torch.load(
+        model_path, map_location=torch.device("cpu"), weights_only=True
+    )
 
   def read_tensor_as_numpy(self, tensor_name) -> np.ndarray:
     tensor = (

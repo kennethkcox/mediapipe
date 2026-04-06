@@ -69,7 +69,10 @@ def load_keras_model(
     A tensorflow Keras model.
   """
   return tf.keras.models.load_model(
-      model_path, custom_objects={'tf': tf}, compile=compile_on_load
+      model_path,
+      custom_objects={'tf': tf},
+      compile=compile_on_load,
+      safe_mode=True,
   )
 
 

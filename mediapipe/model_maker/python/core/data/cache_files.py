@@ -103,7 +103,7 @@ class TFRecordCacheFiles:
     if not tf.io.gfile.exists(self.metadata_file):
       return {}
     with tf.io.gfile.GFile(self.metadata_file, 'r') as f:
-      metadata = yaml.load(f, Loader=yaml.FullLoader)
+      metadata = yaml.safe_load(f)
     return metadata
 
   def is_cached(self) -> bool:
