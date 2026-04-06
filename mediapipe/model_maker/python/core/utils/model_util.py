@@ -67,6 +67,12 @@ def load_keras_model(
 
   Returns:
     A tensorflow Keras model.
+
+  Note:
+    safe_mode=True restricts deserialization of arbitrary Python objects in
+    the Keras native (.keras) format. It does not apply to the TF SavedModel
+    format; callers loading user-supplied SavedModels should load weights
+    separately via model.load_weights() after building the model architecture.
   """
   return tf.keras.models.load_model(
       model_path,

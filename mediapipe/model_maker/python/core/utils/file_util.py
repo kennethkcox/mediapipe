@@ -17,8 +17,10 @@ import dataclasses
 import os
 import pathlib
 import shutil
+import sys
 import tarfile
 import tempfile
+
 import requests
 
 
@@ -55,7 +57,7 @@ class DownloadedFiles:
 
     Raises:
       RuntimeError: If the extracted folder does not have a singular root
-        directory.
+        directory, or if the archive contains a path-traversal entry.
 
     Returns:
       The absolute path to the downloaded file(s)
@@ -74,13 +76,12 @@ class DownloadedFiles:
         tarf = tarfile.open(tempf.name)
         # Use tmpdir to store the extracted contents of the .tar.gz file
         with tempfile.TemporaryDirectory() as tmpdir:
-          try:
-            # filter='data' blocks path traversal and dangerous members
-            # (Python 3.11.4+ / 3.12+).
+          if sys.version_info >= (3, 11, 4):
+            # filter='data' blocks absolute paths, path traversal (..), and
+            # dangerous member types (devices, symlinks outside the tree).
             tarf.extractall(tmpdir, filter='data')
-          except TypeError:
-            # Fallback for Python < 3.11.4: reject any member whose resolved
-            # path escapes the extraction directory.
+          else:
+            # Manual path-traversal check for Python < 3.11.4.
             abs_tmpdir = os.path.realpath(tmpdir) + os.sep
             for member in tarf.getmembers():
               member_path = os.path.realpath(
