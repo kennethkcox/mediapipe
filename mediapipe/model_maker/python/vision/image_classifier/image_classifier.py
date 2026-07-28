@@ -230,8 +230,8 @@ class ImageClassifier(classifier.Classifier):
       if not image_classifier._hparams.steps_per_epoch:
         image_classifier._hparams.steps_per_epoch = 100
       image_classifier._optimizer = image_classifier._create_optimizer()
-      image_classifier._model = tf.keras.models.load_model(
-          saved_model_path, compile=False
+      image_classifier._model.load_weights(
+          os.path.join(saved_model_path, 'variables', 'variables')
       )
       image_classifier._model.compile(
           optimizer=image_classifier._optimizer,

@@ -486,8 +486,8 @@ class _BertClassifier(TextClassifier):
           exclude_from_weight_decay=["LayerNorm", "layer_norm", "bias"],
           global_clipnorm=1.0,
       )
-      bert_classifier._model = tf.keras.models.load_model(
-          saved_model_path, compile=False
+      bert_classifier._model.load_weights(
+          os.path.join(saved_model_path, 'variables', 'variables')
       )
     bert_classifier._load_preprocessor()
     bert_classifier._model.compile(
